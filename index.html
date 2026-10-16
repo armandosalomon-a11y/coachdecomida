@@ -108,13 +108,13 @@
             const scriptViejo = document.getElementById('jsonp-script');
             if (scriptViejo) scriptViejo.remove();
 
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta`;
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Math.random()}`;
 
             const script = document.createElement('script');
             script.id = 'jsonp-script';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error al conectar con las recetas de Google.");
+                alert("Error de conexión con tu Google Sheet.");
                 btn.innerText = "Generar Lista de Súper Eficiente 🚀";
                 btn.disabled = false;
             };
@@ -126,7 +126,14 @@
             btn.innerText = "Generar Lista de Súper Eficiente 🚀";
             btn.disabled = false;
 
-            if (!respuesta.success) return alert("Error: " + respuesta.error);
+            if (!respuesta.success) return alert("Error en tu servidor de Google: " + respuesta.error);
+
+            if (!respuesta.lista || respuesta.lista.length === 0) {
+                document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta. Revisa la ortografía en tu Google Sheet.";
+                document.getElementById('tabla-cuerpo').innerHTML = "";
+                document.getElementById('resultado').style.display = 'block';
+                return;
+            }
 
             document.getElementById('meta-recetas').innerText = `🥗 Platos calculados: ${respuesta.recetasDetectadas.join(', ')} (${respuesta.caloriasAproximadas} kcal totales)`;
 
