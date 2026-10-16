@@ -80,7 +80,6 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE TU SISTEMA
         const CONTRASEÑA_CORRECTA = "Recetas2026"; 
         const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
@@ -135,7 +134,7 @@
                 return;
             }
 
-            document.getElementById('meta-recetas').innerText = `🥗 Platos calculados: ${respuesta.recetasDetectadas.join(', ')} (${respuesta.caloriasAproximadas} kcal totales)`;
+            document.getElementById('meta-recetas').innerText = `🥗 Platos calculados: ${respuesta.recetasDetectadas.join(', ')}`;
 
             const cuerpo = document.getElementById('tabla-cuerpo');
             cuerpo.innerHTML = "";
