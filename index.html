@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // Enlace definitivo verificado con tu servidor
-        const GOOGLE_SCRIPT_URL = "https://google.com"; 
+        // NUEVA URL ASIGNADA A TU SERVIDOR DE GOOGLE SHEETS
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw9ggvGy0p1Yx7B33nsu37bzt6m3WMPXr5E24gkXjhGVzR11wz_HMDgzrNPuPsyPHR09A/exec"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -85,14 +85,16 @@
             const scriptViejo = document.getElementById('jsonp-script');
             if (scriptViejo) scriptViejo.remove();
 
-            // Enviamos la consulta con un identificador de tiempo dinámico (_nocache)
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Date.now()}`;
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Math.random()}`;
 
             const script = document.createElement('script');
             script.id = 'jsonp-script';
             script.src = urlFinal;
-            
-            // Eliminamos la alerta inmediata de error para darle paciencia al navegador mientras Google responde
+            script.onerror = function() {
+                alert("Error de conexión con tu Google Sheet.");
+                btn.innerText = "Generar Lista de Súper Eficiente 🚀";
+                btn.disabled = false;
+            };
             document.body.appendChild(script);
         }
 
