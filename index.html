@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Privado - Planificador de Súper</title>
+    <title>Planificador de Súper Inteligente</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f6f9; color: #2d3748; }
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -16,9 +16,6 @@
         th { background-color: #f7fafc; }
         .sobrante { color: #dd6b20; font-size: 13px; font-weight: bold; }
         
-        #login-section { display: block; max-width: 400px; margin: 0 auto; }
-        #app-section { display: none; }
-        
         @media print {
             .no-print { display: none !important; }
             body { background: white; margin: 0; }
@@ -28,18 +25,9 @@
 </head>
 <body>
 
-    <!-- 🔐 SECCIÓN 1: CONTROL DE ACCESO -->
-    <div id="login-section" class="card">
-        <h1>🔒 Acceso Restringido</h1>
-        <p style="text-align:center; color:#718096;">Introduce la contraseña autorizada para usar la aplicación.</p>
-        <label for="pass-input">Contraseña:</label>
-        <input type="password" id="pass-input" placeholder="Escribe la contraseña aquí...">
-        <button onclick="verificarAcceso()">Entrar al Planificador 🔑</button>
-    </div>
-
-    <!-- 🍳 SECCIÓN 2: LA APLICACIÓN -->
-    <div id="app-section" class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente wii</h1>
+    <!-- 🍳 LA APLICACIÓN DIRECTA -->
+    <div class="card">
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
@@ -80,20 +68,8 @@
     </div>
 
     <script>
-        const CONTRASEÑA_CORRECTA = "Recetas2026"; 
-        
-        // 🔗 URL ACTUALIZADA Y VÁLIDA DE TU BACKEND DE GOOGLE
+        // URL de tu servidor en Google Sheets
         const GOOGLE_SCRIPT_URL = "https://google.com"; 
-
-        function verificarAcceso() {
-            const input = document.getElementById('pass-input').value;
-            if (input === CONTRASEÑA_CORRECTA) {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('app-section').style.display = 'block';
-            } else {
-                alert("Contraseña incorrecta. Acceso denegado.");
-            }
-        }
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
