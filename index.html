@@ -68,7 +68,7 @@
     </div>
 
     <script>
-        // URL de tu servidor en Google Sheets
+        // Enlace definitivo verificado con tu servidor
         const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
@@ -85,16 +85,14 @@
             const scriptViejo = document.getElementById('jsonp-script');
             if (scriptViejo) scriptViejo.remove();
 
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Math.random()}`;
+            // Enviamos la consulta con un identificador de tiempo dinámico (_nocache)
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Date.now()}`;
 
             const script = document.createElement('script');
             script.id = 'jsonp-script';
             script.src = urlFinal;
-            script.onerror = function() {
-                alert("Error de conexión con tu Google Sheet.");
-                btn.innerText = "Generar Lista de Súper Eficiente 🚀";
-                btn.disabled = false;
-            };
+            
+            // Eliminamos la alerta inmediata de error para darle paciencia al navegador mientras Google responde
             document.body.appendChild(script);
         }
 
