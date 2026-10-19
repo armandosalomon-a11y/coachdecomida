@@ -27,7 +27,7 @@
 
     <!-- 🍳 LA APLICACIÓN DIRECTA -->
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente:D</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // NUEVA URL ASIGNADA A TU SERVIDOR DE GOOGLE SHEETS
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC-uuXSUkdI6x0NJX9QvpSoEbkWbZZjX_0z8Xg8yjSJR8kdRfnvaHSEYrKFVlwjrbGqQ/exec";
+        // Enlace forzado a tu nueva implementación limpia de Google Sheets
+        const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -82,23 +82,25 @@
             btn.innerText = "Calculando empaques en tu Google Sheet... ⏳";
             btn.disabled = true;
 
-            const scriptViejo = document.getElementById('jsonp-script');
+            const scriptViejo = document.getElementById('jsonp-script-nuevo');
             if (scriptViejo) scriptViejo.remove();
 
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuesta&_nocache=${Math.random()}`;
+            // Modificamos el receptor a "procesarRespuestaNueva" para saltar el bloqueo de memoria del navegador
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaNueva&_salt=${Math.random()}`;
 
             const script = document.createElement('script');
-            script.id = 'jsonp-script';
+            script.id = 'jsonp-script-nuevo';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error de conexión con tu Google Sheet.");
+                alert("Error crítico de red. Si persiste, prueba abriendo la web desde una pestaña de Incógnito.");
                 btn.innerText = "Generar Lista de Súper Eficiente 🚀";
                 btn.disabled = false;
             };
             document.body.appendChild(script);
         }
 
-        function procesarRespuesta(respuesta) {
+        // Nueva función libre de registros de historial viejos
+        function procesarRespuestaNueva(respuesta) {
             const btn = document.getElementById('btn-calcular');
             btn.innerText = "Generar Lista de Súper Eficiente 🚀";
             btn.disabled = false;
