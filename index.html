@@ -25,13 +25,12 @@
 </head>
 <body>
 
-    <!-- 🍳 LA APLICACIÓN CON IA -->
     <div class="card">
         <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
-            <textarea id="peticion" placeholder="Ej: Hola! Esta semana se me antoja comer gelatina con yogurt unos días..."></textarea>
+            <textarea id="peticion" placeholder="Ej: Hola! Esta semana se me antoja comer gelatina con yogurt..."></textarea>
             
             <div style="display:flex; gap:15px;">
                 <div style="flex:1;">
@@ -68,8 +67,8 @@
     </div>
 
     <script>
-        // 🔗 URL ACTUALIZADA AUTOMÁTICAMENTE DE TU ÚLTIMA IMPLEMENTACIÓN ACTIVA
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
+        // Enlace activo y unificado con tu servidor
+        const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -91,8 +90,7 @@
             script.id = 'jsonp-script-final';
             script.src = urlFinal;
             script.onerror = function() {
-                // Alerta de depuración para rastrear si el navegador sigue intentando conectar a un túnel viejo
-                alert("Error de conexión. Por favor, asegúrate de colocar el enlace /exec más reciente de tu Google Sheets en el código.");
+                alert("Error de conexión con tu Google Sheet.");
                 btn.innerText = "Generar Lista con IA 🚀";
                 btn.disabled = false;
             };
@@ -107,7 +105,7 @@
             if (!respuesta.success) return alert("Error interno del servidor de Google: " + respuesta.error);
 
             if (!respuesta.recetasDetectadas || respuesta.recetasDetectadas.length === 0) {
-                document.getElementById('meta-recetas').innerText = "❌ La IA no logró identificar la receta en tu petición. Intenta escribir algo como 'quiero gelatina con yogurt'.";
+                document.getElementById('meta-recetas').innerText = "❌ La IA no logró identificar la receta en tu petición.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
                 document.getElementById('resultado').style.display = 'block';
                 return;
@@ -119,10 +117,9 @@
             cuerpo.innerHTML = "";
 
             respuesta.lista.forEach(item => {
-                // Formatear presentación comercial exacta de empaques (Ej: 1 x 2000 gramos)
+                // Sincronización perfecta de empaque comercial y unidad
                 let textoCompra = `${item.paquetesAComprar} x ${item.empaqueMin} ${item.unidadCompra}`;
                 
-                // Si la presentación comercial es por unidades simples o sobres (Ej: gelatina), simplificar la vista
                 if (item.unidadCompra.toLowerCase() === "sobre" || item.unidadCompra.toLowerCase() === "unidad") {
                     textoCompra = `${item.paquetesAComprar} x ${item.unidadCompra}`;
                 }
