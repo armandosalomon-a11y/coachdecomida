@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // Enlace forzado a tu nueva implementación limpia de Google Sheets
-        const GOOGLE_SCRIPT_URL = "https://google.com"; 
+        // 🔗 TU ENLACE ACTUALIZADO Y DEFINITIVO DE GOOGLE SHEETS
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4buBuNc_EQap_1wmnt1_kGVCZux8WHeYrsQgr1YzJlNw5SXUAHvJg9XAkXgmFsotf_Q/exec"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -82,30 +82,28 @@
             btn.innerText = "Calculando empaques en tu Google Sheet... ⏳";
             btn.disabled = true;
 
-            const scriptViejo = document.getElementById('jsonp-script-nuevo');
+            const scriptViejo = document.getElementById('jsonp-script-final');
             if (scriptViejo) scriptViejo.remove();
 
-            // Modificamos el receptor a "procesarRespuestaNueva" para saltar el bloqueo de memoria del navegador
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaNueva&_salt=${Math.random()}`;
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaFinal&_ts=${Date.now()}`;
 
             const script = document.createElement('script');
-            script.id = 'jsonp-script-nuevo';
+            script.id = 'jsonp-script-final';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error crítico de red. Si persiste, prueba abriendo la web desde una pestaña de Incógnito.");
+                alert("La dirección de Google Sheets configurada no está activa o fue eliminada.");
                 btn.innerText = "Generar Lista de Súper Eficiente 🚀";
                 btn.disabled = false;
             };
             document.body.appendChild(script);
         }
 
-        // Nueva función libre de registros de historial viejos
-        function procesarRespuestaNueva(respuesta) {
+        function procesarRespuestaFinal(respuesta) {
             const btn = document.getElementById('btn-calcular');
             btn.innerText = "Generar Lista de Súper Eficiente 🚀";
             btn.disabled = false;
 
-            if (!respuesta.success) return alert("Error en tu servidor de Google: " + respuesta.error);
+            if (!respuesta.success) return alert("Error interno del servidor de Google: " + respuesta.error);
 
             if (!respuesta.lista || respuesta.lista.length === 0) {
                 document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta. Revisa la ortografía en tu Google Sheet.";
