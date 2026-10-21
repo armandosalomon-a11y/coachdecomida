@@ -31,7 +31,7 @@
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
-            <textarea id="peticion" placeholder="Ej: Esta semana quiero la receta de pollo con pepino y verduras con carne..."></textarea>
+            <textarea id="peticion" placeholder="Ej: Esta semana quiero la receta de gelatina con yogurt..."></textarea>
             
             <div style="display:flex; gap:15px;">
                 <div style="flex:1;">
@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // ⚠️ EN LA LÍNEA DE ABAJO, PEGA LA NUEVA URL QUE ACABAS DE COPIAR EN EL PASO 1
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZqdkKBiPCwbm4OdRhLxHGOASAJBT6UAKKKxsvtmln07zigLP-mPdZ86glmrRbW2ybXg/exec"; 
+        // 🔗 TU ENLACE ACTUALIZADO Y FUNCIONAL DE GOOGLE APPS SCRIPT
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -105,8 +105,8 @@
 
             if (!respuesta.success) return alert("Error interno del servidor de Google: " + respuesta.error);
 
-            if (!respuesta.lista || respuesta.lista.length === 0) {
-                document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta. Revisa la ortografía en tu Google Sheet.";
+            if (!respuesta.recetasDetectadas || respuesta.recetasDetectadas.length === 0) {
+                document.getElementById('meta-recetas').innerText = "❌ No se encontraron coincidencias exactas. Escribe por ejemplo: 'quiero gelatina con yogurt'.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
                 document.getElementById('resultado').style.display = 'block';
                 return;
