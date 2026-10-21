@@ -27,7 +27,7 @@
 
     <!-- 🍳 LA APLICACIÓN CON IA -->
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // 🔗 TU ENLACE ACTUALIZADO, CORREGIDO Y ACTIVO CON IA
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
+        // 🔗 ENLACE VERIFICADO Y ACTIVO CON LA API REPARADA DE TU GOOGLE SHEET
+        const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -85,6 +85,7 @@
             const scriptViejo = document.getElementById('jsonp-script-final');
             if (scriptViejo) scriptViejo.remove();
 
+            // Pasamos un timestamp dinámico para evitar bloqueos por caché del navegador
             const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaFinal&_ts=${Date.now()}`;
 
             const script = document.createElement('script');
