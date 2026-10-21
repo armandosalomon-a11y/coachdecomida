@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planificador de Súper Inteligente</title>
+    <title>Planificador de Súper Inteligente con IA</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f6f9; color: #2d3748; }
         .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -25,13 +25,13 @@
 </head>
 <body>
 
-    <!-- 🍳 LA APLICACIÓN DIRECTA -->
+    <!-- 🍳 LA APLICACIÓN CON IA -->
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra v1.2</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
-            <textarea id="peticion" placeholder="Ej: Esta semana quiero la receta de gelatina con yogurt..."></textarea>
+            <textarea id="peticion" placeholder="Ej: Hola! Esta semana se me antoja comer gelatina con yogurt unos días..."></textarea>
             
             <div style="display:flex; gap:15px;">
                 <div style="flex:1;">
@@ -43,7 +43,7 @@
                     <input type="number" id="personas" value="2">
                 </div>
             </div>
-            <button id="btn-calcular" onclick="solicitarListaDeCompra()">Generar Lista de Súper Eficiente 🚀</button>
+            <button id="btn-calcular" onclick="solicitarListaDeCompra()">Generar Lista con IA 🚀</button>
         </div>
 
         <div id="resultado" style="display:none; margin-top:30px;">
@@ -68,7 +68,7 @@
     </div>
 
     <script>
-        // 🔗 TU ENLACE ACTUALIZADO Y FUNCIONAL DE GOOGLE APPS SCRIPT
+        // 🔗 TU ENLACE ACTUALIZADO, CORREGIDO Y ACTIVO CON IA
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
 
         function solicitarListaDeCompra() {
@@ -79,7 +79,7 @@
 
             if (!peticion) return alert("Por favor, escribe lo que deseas comer.");
 
-            btn.innerText = "Calculando empaques en tu Google Sheet... ⏳";
+            btn.innerText = "La IA está leyendo tu Google Sheet y calculando empaques... ⏳";
             btn.disabled = true;
 
             const scriptViejo = document.getElementById('jsonp-script-final');
@@ -91,8 +91,8 @@
             script.id = 'jsonp-script-final';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("La dirección de Google Sheets configurada no está activa o fue eliminada.");
-                btn.innerText = "Generar Lista de Súper Eficiente 🚀";
+                alert("Error de conexión. Asegúrate de limpiar la caché del navegador.");
+                btn.innerText = "Generar Lista con IA 🚀";
                 btn.disabled = false;
             };
             document.body.appendChild(script);
@@ -100,19 +100,19 @@
 
         function procesarRespuestaFinal(respuesta) {
             const btn = document.getElementById('btn-calcular');
-            btn.innerText = "Generar Lista de Súper Eficiente 🚀";
+            btn.innerText = "Generar Lista con IA 🚀";
             btn.disabled = false;
 
             if (!respuesta.success) return alert("Error interno del servidor de Google: " + respuesta.error);
 
             if (!respuesta.recetasDetectadas || respuesta.recetasDetectadas.length === 0) {
-                document.getElementById('meta-recetas').innerText = "❌ No se encontraron coincidencias exactas. Escribe por ejemplo: 'quiero gelatina con yogurt'.";
+                document.getElementById('meta-recetas').innerText = "❌ La IA no logró identificar la receta en tu petición. Intenta escribir algo como 'quiero gelatina con yogurt'.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
                 document.getElementById('resultado').style.display = 'block';
                 return;
             }
 
-            document.getElementById('meta-recetas').innerText = `🥗 Platos calculados: ${respuesta.recetasDetectadas.join(', ')}`;
+            document.getElementById('meta-recetas').innerText = `🥗 Platos identificados por la IA: ${respuesta.recetasDetectadas.join(', ')}`;
 
             const cuerpo = document.getElementById('tabla-cuerpo');
             cuerpo.innerHTML = "";
