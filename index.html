@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // 🔗 TU ENLACE ACTUALIZADO, CORREGIDO Y ACTIVO CON IA
-        const GOOGLE_SCRIPT_URL = "https://google.com"; 
+        // 🔗 URL ACTUALIZADA AUTOMÁTICAMENTE DE TU ÚLTIMA IMPLEMENTACIÓN ACTIVA
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -91,7 +91,8 @@
             script.id = 'jsonp-script-final';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error de conexión con tu Google Sheet.");
+                // Alerta de depuración para rastrear si el navegador sigue intentando conectar a un túnel viejo
+                alert("Error de conexión. Por favor, asegúrate de colocar el enlace /exec más reciente de tu Google Sheets en el código.");
                 btn.innerText = "Generar Lista con IA 🚀";
                 btn.disabled = false;
             };
@@ -118,10 +119,10 @@
             cuerpo.innerHTML = "";
 
             respuesta.lista.forEach(item => {
-                // 🛠️ CORRECCIÓN CLAVE: Ahora imprime la cantidad comercial del empaque (item.empaqueMin) junto a la unidad de medida (item.unidadCompra)
+                // Formatear presentación comercial exacta de empaques (Ej: 1 x 2000 gramos)
                 let textoCompra = `${item.paquetesAComprar} x ${item.empaqueMin} ${item.unidadCompra}`;
                 
-                // Si viene por unidad simple o sobre (como la gelatina), simplificar el texto visual para que diga "4 x sobre"
+                // Si la presentación comercial es por unidades simples o sobres (Ej: gelatina), simplificar la vista
                 if (item.unidadCompra.toLowerCase() === "sobre" || item.unidadCompra.toLowerCase() === "unidad") {
                     textoCompra = `${item.paquetesAComprar} x ${item.unidadCompra}`;
                 }
