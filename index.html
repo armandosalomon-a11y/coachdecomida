@@ -27,7 +27,7 @@
 <body>
 
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1.4</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1.5</h1>
         
         <!-- Ventana interactiva de preguntas de la IA -->
         <div id="ia-chat" class="chat-bubble no-print">
@@ -73,7 +73,7 @@
     </div>
 
     <script>
-        // ⚠️ REEMPLAZA EL CONTENIDO DE ABAJO POR LA URL TOTALMENTE NUEVA QUE COPIASTE EN EL PASO 1
+        // 🔗 URL REPARADA (Se eliminó la letra E accidental al final)
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
 
         function solicitarListaDeCompra() {
@@ -111,7 +111,6 @@
 
             if (!respuesta.success) return alert("Error del servidor: " + respuesta.error);
 
-            // ESCENARIO A: La IA detecta ambigüedad y hace una pregunta en el globo azul
             if (respuesta.status === "pregunta") {
                 document.getElementById('ia-mensaje').innerText = "🤖 Asistente: " + respuesta.mensaje;
                 document.getElementById('ia-chat').style.display = "block";
@@ -119,7 +118,6 @@
                 return;
             }
 
-            // ESCENARIO B: Todo correcto, renderizar la tabla limpia
             if (!respuesta.lista || respuesta.lista.length === 0) {
                 document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta en tu Google Sheet.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
@@ -133,7 +131,10 @@
             cuerpo.innerHTML = "";
 
             respuesta.lista.forEach(item => {
+                // 🛠️ ALINEACIÓN COMERCIAL: Muestra empaques en gramos exactos (Ej: 1 x 2000 gramos)
                 let textoCompra = `${item.paquetesAComprar} x ${item.empaqueMin} ${item.unidadCompra}`;
+                
+                // Si la unidad es por sobre o pieza simple, oculta los gramos repetidos para que diga "4 x sobre"
                 if (item.unidadCompra.toLowerCase() === "sobre" || item.unidadCompra.toLowerCase() === "unidad") {
                     textoCompra = `${item.paquetesAComprar} x ${item.unidadCompra}`;
                 }
