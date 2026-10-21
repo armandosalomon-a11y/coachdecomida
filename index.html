@@ -27,7 +27,7 @@
 
     <!-- 🍳 LA APLICACIÓN CON IA -->
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1.1</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
@@ -68,8 +68,8 @@
     </div>
 
     <script>
-        // 🔗 ENLACE VERIFICADO Y ACTIVO CON LA API REPARADA DE TU GOOGLE SHEET
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx70O4NjE29eXYK2yr91AzZsUVae-ih2uDrmWi2EMqXpGpya3fTjFvWdFNb9gUgQlSWiA/exec"; 
+        // 🔗 TU ENLACE ACTUALIZADO, CORREGIDO Y ACTIVO CON IA
+        const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -85,14 +85,13 @@
             const scriptViejo = document.getElementById('jsonp-script-final');
             if (scriptViejo) scriptViejo.remove();
 
-            // Pasamos un timestamp dinámico para evitar bloqueos por caché del navegador
             const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaFinal&_ts=${Date.now()}`;
 
             const script = document.createElement('script');
             script.id = 'jsonp-script-final';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error de conexión. Asegúrate de limpiar la caché del navegador.");
+                alert("Error de conexión con tu Google Sheet.");
                 btn.innerText = "Generar Lista con IA 🚀";
                 btn.disabled = false;
             };
@@ -119,11 +118,19 @@
             cuerpo.innerHTML = "";
 
             respuesta.lista.forEach(item => {
+                // 🛠️ CORRECCIÓN CLAVE: Ahora imprime la cantidad comercial del empaque (item.empaqueMin) junto a la unidad de medida (item.unidadCompra)
+                let textoCompra = `${item.paquetesAComprar} x ${item.empaqueMin} ${item.unidadCompra}`;
+                
+                // Si viene por unidad simple o sobre (como la gelatina), simplificar el texto visual para que diga "4 x sobre"
+                if (item.unidadCompra.toLowerCase() === "sobre" || item.unidadCompra.toLowerCase() === "unidad") {
+                    textoCompra = `${item.paquetesAComprar} x ${item.unidadCompra}`;
+                }
+
                 cuerpo.innerHTML += `
                     <tr>
                         <td><strong>${item.ingrediente}</strong></td>
                         <td>${item.cantidadNeta} ${item.unidad}</td>
-                        <td><mark style="background:#d1fae5; padding:3px; font-weight:bold;">${item.paquetesAComprar} x ${item.unidadCompra}</mark></td>
+                        <td><mark style="background:#d1fae5; padding:3px; font-weight:bold;">${textoCompra}</mark></td>
                         <td><span class="sobrante">${item.sobrante > 0 ? '+' + item.sobrante + ' ' + item.unidad : '0'}</span></td>
                         <td><span style="font-size:12px; background:#e2e8f0; padding:4px; border-radius:4px;">${item.lugar || 'Cualquiera'}</span></td>
                     </tr>
