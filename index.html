@@ -6,7 +6,7 @@
     <title>Planificador de Súper Inteligente con IA</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background-color: #f4f6f9; color: #2d3748; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
         h1, h2 { color: #1a202c; text-align: center; }
         input, textarea { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #cbd5e1; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; background: #10b981; color: white; border: none; padding: 14px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
@@ -15,6 +15,7 @@
         th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
         th { background-color: #f7fafc; }
         .sobrante { color: #dd6b20; font-size: 13px; font-weight: bold; }
+        .chat-bubble { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
         
         @media print {
             .no-print { display: none !important; }
@@ -28,9 +29,14 @@
     <div class="card">
         <h1 class="no-print">🛒 Mi Generador de Compra Inteligente</h1>
         
+        <!-- Ventana interactiva de preguntas de la IA -->
+        <div id="ia-chat" class="chat-bubble no-print">
+            <p id="ia-mensaje" style="margin:0 0 10px 0; font-weight:500; color:#2b6cb0;"></p>
+        </div>
+
         <div class="no-print">
             <label for="peticion">¿Qué te gustaría cocinar esta semana?</label>
-            <textarea id="peticion" placeholder="Ej: Hola! Esta semana se me antoja comer gelatina con yogurt..."></textarea>
+            <textarea id="peticion" placeholder="Ej: Hola! Esta semana quiero preparar la gelatina con yogur..."></textarea>
             
             <div style="display:flex; gap:15px;">
                 <div style="flex:1;">
@@ -67,7 +73,7 @@
     </div>
 
     <script>
-        // Enlace activo y unificado con tu servidor
+        // Enlace unificado y activo de tu Google Sheet
         const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
@@ -78,16 +84,17 @@
 
             if (!peticion) return alert("Por favor, escribe lo que deseas comer.");
 
-            btn.innerText = "La IA está leyendo tu Google Sheet y calculando empaques... ⏳";
+            btn.innerText = "La IA está procesando tu solicitud... ⏳";
             btn.disabled = true;
+            document.getElementById('ia-chat').style.display = "none";
 
-            const scriptViejo = document.getElementById('jsonp-script-final');
+            const scriptViejo = document.getElementById('jsonp-script-interactivo');
             if (scriptViejo) scriptViejo.remove();
 
-            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaFinal&_ts=${Date.now()}`;
+            const urlFinal = `${GOOGLE_SCRIPT_URL}?peticion=${encodeURIComponent(peticion)}&dias=${dias}&personas=${personas}&callback=procesarRespuestaInteractiva&_ts=${Date.now()}`;
 
             const script = document.createElement('script');
-            script.id = 'jsonp-script-final';
+            script.id = 'jsonp-script-interactivo';
             script.src = urlFinal;
             script.onerror = function() {
                 alert("Error de conexión con tu Google Sheet.");
@@ -97,29 +104,36 @@
             document.body.appendChild(script);
         }
 
-        function procesarRespuestaFinal(respuesta) {
+        function procesarRespuestaInteractiva(respuesta) {
             const btn = document.getElementById('btn-calcular');
             btn.innerText = "Generar Lista con IA 🚀";
             btn.disabled = false;
 
-            if (!respuesta.success) return alert("Error interno del servidor de Google: " + respuesta.error);
+            if (!respuesta.success) return alert("Error del servidor: " + respuesta.error);
 
-            if (!respuesta.recetasDetectadas || respuesta.recetasDetectadas.length === 0) {
-                document.getElementById('meta-recetas').innerText = "❌ La IA no logró identificar la receta en tu petición.";
+            // ESCENARIO A: La IA detecta ambigüedad y hace una pregunta
+            if (respuesta.status === "pregunta") {
+                document.getElementById('ia-mensaje').innerText = "🤖 Asistente: " + respuesta.mensaje;
+                document.getElementById('ia-chat').style.display = "block";
+                document.getElementById('resultado').style.display = "none";
+                return;
+            }
+
+            // ESCENARIO B: Todo correcto, renderizar la tabla
+            if (!respuesta.lista || respuesta.lista.length === 0) {
+                document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta en tu Google Sheet.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
                 document.getElementById('resultado').style.display = 'block';
                 return;
             }
 
-            document.getElementById('meta-recetas').innerText = `🥗 Platos identificados por la IA: ${respuesta.recetasDetectadas.join(', ')}`;
+            document.getElementById('meta-recetas').innerText = `🥗 Platos identificados: ${respuesta.recetasDetectadas.join(', ')}`;
 
             const cuerpo = document.getElementById('tabla-cuerpo');
             cuerpo.innerHTML = "";
 
             respuesta.lista.forEach(item => {
-                // Sincronización perfecta de empaque comercial y unidad
                 let textoCompra = `${item.paquetesAComprar} x ${item.empaqueMin} ${item.unidadCompra}`;
-                
                 if (item.unidadCompra.toLowerCase() === "sobre" || item.unidadCompra.toLowerCase() === "unidad") {
                     textoCompra = `${item.paquetesAComprar} x ${item.unidadCompra}`;
                 }
