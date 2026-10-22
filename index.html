@@ -16,20 +16,15 @@
         th { background-color: #f7fafc; }
         .sobrante { color: #dd6b20; font-size: 13px; font-weight: bold; }
         .chat-bubble { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; text-align: center; font-weight: bold; color: #2b6cb0; }
-        
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white; margin: 0; }
-            .card { box-shadow: none; padding: 0; }
-        }
+        .error-log { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; padding: 15px; border-radius: 8px; margin-top: 20px; display: none; font-family: monospace; white-space: pre-wrap; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1.7</h1>
+        <h1 class="no-print">🛒 Mi Generador de Compra Inteligente 1.1.8</h1>
         
-        <!-- 🤖 BURBUJA INTERACTIVA DE LA IA PARA RECOGER PREGUNTAS -->
+        <!-- Burbuja interactiva de la IA -->
         <div id="ia-chat" class="chat-bubble no-print"></div>
 
         <div class="no-print">
@@ -48,6 +43,9 @@
             </div>
             <button id="btn-calcular" onclick="solicitarListaDeCompra()">Generar Lista con IA 🚀</button>
         </div>
+
+        <!-- Consola de depuración en pantalla -->
+        <div id="consola-error" class="error-log no-print"></div>
 
         <div id="resultado" style="display:none; margin-top:30px;">
             <h2>📋 Tu Plan de Compra Oficial</h2>
@@ -71,8 +69,7 @@
     </div>
 
     <script>
-        // 🔗 URL ACTUALIZADA Y DE PRODUCTION DE GOOGLE APPS SCRIPT
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFkRwCOvMNRUAGb_x4XJE1hZsmluUhTPiCBeC6Nl9WtF4dQLsxbmRA8vzJh5F9cviMtg/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://google.com"; 
 
         function solicitarListaDeCompra() {
             const peticion = document.getElementById('peticion').value.trim();
@@ -85,6 +82,7 @@
             btn.innerText = "La IA está procesando tu solicitud... ⏳";
             btn.disabled = true;
             document.getElementById('ia-chat').style.display = "none";
+            document.getElementById('consola-error').style.display = "none";
 
             const scriptViejo = document.getElementById('jsonp-script-interactivo');
             if (scriptViejo) scriptViejo.remove();
@@ -95,7 +93,8 @@
             script.id = 'jsonp-script-interactivo';
             script.src = urlFinal;
             script.onerror = function() {
-                alert("Error de conexión con tu Google Sheet.");
+                document.getElementById('consola-error').innerText = "⚠️ DETECCIÓN DE RED: El script de Google Sheet no respondió a tiempo o la URL devolvió un código inválido.";
+                document.getElementById('consola-error').style.display = "block";
                 btn.innerText = "Generar Lista con IA 🚀";
                 btn.disabled = false;
             };
@@ -107,18 +106,21 @@
             btn.innerText = "Generar Lista con IA 🚀";
             btn.disabled = false;
 
-            if (!respuesta.success) return alert("Error del servidor: " + respuesta.error);
+            // Si Google responde con una Exception interna, la pintamos en pantalla inmediatamente
+            if (respuesta.success === false || respuesta.error) {
+                document.getElementById('consola-error').innerText = "❌ ERROR INTERNO DE GOOGLE SCRIPT:\n" + (respuesta.error || JSON.stringify(respuesta));
+                document.getElementById('consola-error').style.display = "block";
+                return;
+            }
 
-            // 🛠️ ESCENARIO A: Capturar de forma limpia la pregunta conversacional de Gemini
-            if (respuesta.status === "pregunta" || (respuesta.mensaje && (!respuesta.lista || respuesta.lista.length === 0))) {
+            if (respuesta.status === "pregunta") {
                 const cajaMensaje = document.getElementById('ia-chat');
-                cajaMensaje.innerText = "🤖 Asistente: " + (respuesta.mensaje || "Veo que mencionaste pollo, pero tengo varias opciones en el catálogo. ¿Te gustaría preparar Pollo con pepino o Pollo con verduras?");
+                cajaMensaje.innerText = "🤖 Asistente: " + respuesta.mensaje;
                 cajaMensaje.style.display = "block";
                 document.getElementById('resultado').style.display = "none";
                 return;
             }
 
-            // ESCENARIO B: Renderizar los renglones ordenados de la tabla
             if (!respuesta.lista || respuesta.lista.length === 0) {
                 document.getElementById('meta-recetas').innerText = "❌ No se encontraron ingredientes para esa receta en tu Google Sheet.";
                 document.getElementById('tabla-cuerpo').innerHTML = "";
